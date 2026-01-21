@@ -11,7 +11,7 @@ const restartBtn = document.getElementById('restartBtn');
 // Game Variables
 let bird = {
     x: 80,
-    y: canvas.height / 2,
+    y: 300,
     width: 40,
     height: 30,
     velocity: 0,
@@ -24,13 +24,16 @@ let score = 0;
 let highScore = localStorage.getItem('flappyHighScore') || 0;
 let gameRunning = false;
 let frameCount = 0;
-const pipeWidth = 60;
-const pipeGap = 150;
-const pipeSpeed = 3;
+let lastTime = 0;
+
+// Constants
+const PIPE_WIDTH = 60;
+const PIPE_GAP = 150;
+const PIPE_SPEED = 3; // FIXED: Constant speed
+const PIPE_INTERVAL = 1500; // Every 1.5 seconds
 
 // Initialize
 function init() {
-    // Set high score
     highScoreElement.textContent = highScore;
     
     // Event Listeners
@@ -50,43 +53,44 @@ function init() {
         }
     });
     
-    // Draw initial screen
     drawStartScreen();
 }
 
 // Start Game
 function startGame() {
-    // Reset game state
-    bird.y = canvas.height / 2;
+    // Reset everything
+    bird.y = 300;
     bird.velocity = 0;
     pipes = [];
     score = 0;
-    frameCount = 0;
     gameRunning = true;
+    frameCount = 0;
+    lastTime = 0;
     
-    // Update UI
     scoreElement.textContent = score;
     gameOverScreen.style.display = 'none';
-    startBtn.innerHTML = '<i class="fas fa-play"></i> Game Running';
-    startBtn.style.background = 'linear-gradient(to right, #FF416C, #FF4B2B)';
     
     // Start game loop
-    gameLoop();
+    requestAnimationFrame(gameLoop);
 }
 
 // Game Loop
-function gameLoop() {
+function gameLoop(currentTime) {
     if (!gameRunning) return;
+    
+    // Calculate delta time for consistent speed
+    const deltaTime = lastTime ? currentTime - lastTime : 16; // Approx 60 FPS
+    lastTime = currentTime;
     
     // Clear canvas
     ctx.fillStyle = '#70c5ce';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Update bird
-    updateBird();
+    updateBird(deltaTime);
     
     // Update pipes
-    updatePipes();
+    updatePipes(deltaTime);
     
     // Draw everything
     drawBird();
@@ -99,15 +103,57 @@ function gameLoop() {
         return;
     }
     
-    // Next frame
-    frameCount++;
+    // Continue game loop
     requestAnimationFrame(gameLoop);
 }
 
 // Update Bird
-function updateBird() {
-    bird.velocity += bird.gravity;
-    bird.y += bird.velocity;
+function updateBird(deltaTime) {
+    // Apply gravity (scaled by deltaTime for consistent speed)
+    bird.velocity += bird.gravity * (deltaTime / 16);
+    bird.y += bird.velocity * (deltaTime / 16);
+}
+
+// Update Pipes
+function updatePipes(deltaTime) {
+    // Add new pipe at regular interval
+    if (frameCount % Math.floor(PIPE_INTERVAL / 16) === 0) {
+        addPipe();
+    }
+    
+    // Move pipes (constant speed)
+    for (let i = pipes.length - 1; i >= 0; i--) {
+        let pipe = pipes[i];
+        pipe.x -= PIPE_SPEED * (deltaTime / 16);
+        
+        // Remove off-screen pipes
+        if (pipe.x + PIPE_WIDTH < 0) {
+            pipes.splice(i, 1);
+            continue;
+        }
+        
+        // Check if bird passed the pipe
+        if (!pipe.passed && pipe.x + PIPE_WIDTH < bird.x) {
+            pipe.passed = true;
+            score++;
+            scoreElement.textContent = score;
+        }
+    }
+    
+    frameCount++;
+}
+
+// Add New Pipe
+function addPipe() {
+    const minHeight = 50;
+    const maxHeight = canvas.height - PIPE_GAP - 100;
+    const topHeight = Math.random() * (maxHeight - minHeight) + minHeight;
+    
+    pipes.push({
+        x: canvas.width,
+        topHeight: topHeight,
+        passed: false
+    });
 }
 
 // Draw Bird
@@ -116,10 +162,9 @@ function drawBird() {
     ctx.fillStyle = '#FFD700';
     ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
     
-    // Bird wing (animated)
+    // Bird wing
     ctx.fillStyle = '#FFA500';
-    const wingY = bird.y + (Math.sin(frameCount * 0.2) * 3);
-    ctx.fillRect(bird.x - 8, wingY + 5, 15, 12);
+    ctx.fillRect(bird.x - 8, bird.y + 10, 15, 12);
     
     // Bird eye
     ctx.fillStyle = 'black';
@@ -130,83 +175,41 @@ function drawBird() {
     ctx.fillRect(bird.x + 35, bird.y + 12, 15, 8);
 }
 
-// Update Pipes
-function updatePipes() {
-    // Add new pipe every 120 frames
-    if (frameCount % 120 === 0) {
-        addPipe();
-    }
-    
-    // Move and check pipes
-    for (let i = pipes.length - 1; i >= 0; i--) {
-        let pipe = pipes[i];
-        pipe.x -= pipeSpeed;
-        
-        // Remove off-screen pipes
-        if (pipe.x + pipeWidth < 0) {
-            pipes.splice(i, 1);
-            continue;
-        }
-        
-        // Check if bird passed the pipe
-        if (!pipe.passed && pipe.x + pipeWidth < bird.x) {
-            pipe.passed = true;
-            score++;
-            scoreElement.textContent = score;
-        }
-    }
-}
-
-// Add New Pipe
-function addPipe() {
-    const minHeight = 50;
-    const maxHeight = canvas.height - pipeGap - 50;
-    const topHeight = Math.random() * (maxHeight - minHeight) + minHeight;
-    
-    pipes.push({
-        x: canvas.width,
-        topHeight: topHeight,
-        passed: false
-    });
-}
-
 // Draw Pipes
 function drawPipes() {
     pipes.forEach(pipe => {
         // Top pipe
         ctx.fillStyle = '#2a9d8f';
-        ctx.fillRect(pipe.x, 0, pipeWidth, pipe.topHeight);
+        ctx.fillRect(pipe.x, 0, PIPE_WIDTH, pipe.topHeight);
         
         // Top pipe cap
         ctx.fillStyle = '#1d7a6b';
-        ctx.fillRect(pipe.x - 5, pipe.topHeight - 20, pipeWidth + 10, 20);
+        ctx.fillRect(pipe.x - 5, pipe.topHeight - 15, PIPE_WIDTH + 10, 15);
         
         // Bottom pipe
-        const bottomY = pipe.topHeight + pipeGap;
-        ctx.fillRect(pipe.x, bottomY, pipeWidth, canvas.height - bottomY);
+        const bottomY = pipe.topHeight + PIPE_GAP;
+        ctx.fillRect(pipe.x, bottomY, PIPE_WIDTH, canvas.height - bottomY);
         
         // Bottom pipe cap
-        ctx.fillStyle = '#1d7a6b';
-        ctx.fillRect(pipe.x - 5, bottomY, pipeWidth + 10, 20);
+        ctx.fillRect(pipe.x - 5, bottomY, PIPE_WIDTH + 10, 15);
     });
 }
 
 // Draw Ground
 function drawGround() {
     ctx.fillStyle = '#8B4513';
-    ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
+    ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
     
-    // Ground pattern
     ctx.fillStyle = '#A0522D';
     for (let i = 0; i < canvas.width; i += 40) {
-        ctx.fillRect(i, canvas.height - 20, 20, 5);
+        ctx.fillRect(i, canvas.height - 30, 20, 10);
     }
 }
 
 // Check Collisions
 function checkCollisions() {
     // Check ground and ceiling
-    if (bird.y + bird.height > canvas.height - 20 || bird.y < 0) {
+    if (bird.y + bird.height > canvas.height - 30 || bird.y < 0) {
         return true;
     }
     
@@ -214,15 +217,15 @@ function checkCollisions() {
     for (let pipe of pipes) {
         // Check top pipe collision
         if (bird.x + bird.width > pipe.x && 
-            bird.x < pipe.x + pipeWidth && 
+            bird.x < pipe.x + PIPE_WIDTH && 
             bird.y < pipe.topHeight) {
             return true;
         }
         
         // Check bottom pipe collision
-        const bottomY = pipe.topHeight + pipeGap;
+        const bottomY = pipe.topHeight + PIPE_GAP;
         if (bird.x + bird.width > pipe.x && 
-            bird.x < pipe.x + pipeWidth && 
+            bird.x < pipe.x + PIPE_WIDTH && 
             bird.y + bird.height > bottomY) {
             return true;
         }
@@ -245,10 +248,6 @@ function gameOver() {
     // Show game over screen
     finalScoreElement.textContent = `Score: ${score}`;
     gameOverScreen.style.display = 'flex';
-    
-    // Reset button
-    startBtn.innerHTML = '<i class="fas fa-redo"></i> Restart Game';
-    startBtn.style.background = 'linear-gradient(to right, #00b09b, #96c93d)';
 }
 
 // Draw Start Screen
