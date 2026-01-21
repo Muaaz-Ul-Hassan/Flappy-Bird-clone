@@ -4,12 +4,12 @@ const ctx = canvas.getContext("2d");
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 
-// Bird properties
+// Bird
 let bird = { x: 80, y: 300, width: 30, height: 30, velocity: 0 };
 const gravity = 0.6;
 const jump = -10;
 
-// Pipes properties
+// Pipes
 let pipes = [];
 const pipeWidth = 50;
 const gapHeight = 150;
@@ -44,7 +44,6 @@ canvas.addEventListener("click", function(){
 });
 
 function gameLoop() {
-    // Clear canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
     // Bird physics
@@ -55,10 +54,10 @@ function gameLoop() {
     ctx.fillStyle = "yellow";
     ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
 
-    // Pipes logic
-    if(frame % 90 === 0) { // every 90 frames
+    // Pipe generation
+    if(frame % 90 === 0) {
         const pipeY = Math.floor(Math.random() * (canvasHeight - gapHeight - 50)) + 25;
-        pipes.push({ x: canvasWidth, y: pipeY });
+        pipes.push({ x: canvasWidth, y: pipeY, passed: false });
     }
 
     for(let i=0; i<pipes.length; i++) {
@@ -68,27 +67,27 @@ function gameLoop() {
         // Draw top pipe
         ctx.fillStyle = "green";
         ctx.fillRect(p.x, 0, pipeWidth, p.y);
-
         // Draw bottom pipe
         ctx.fillRect(p.x, p.y + gapHeight, pipeWidth, canvasHeight - p.y - gapHeight);
 
-        // Check collision
+        // Collision
         if(bird.x < p.x + pipeWidth && bird.x + bird.width > p.x &&
            (bird.y < p.y || bird.y + bird.height > p.y + gapHeight)) {
             endGame();
         }
 
-        // Increase score when pipe passed
-        if(p.x + pipeWidth === bird.x) {
+        // Score: only once per pipe
+        if(!p.passed && p.x + pipeWidth < bird.x) {
             score++;
             document.getElementById("score").textContent = "Score: " + score;
+            p.passed = true;
         }
     }
 
     // Remove offscreen pipes
     pipes = pipes.filter(p => p.x + pipeWidth > 0);
 
-    // Check floor and ceiling
+    // Floor and ceiling collision
     if(bird.y + bird.height > canvasHeight || bird.y < 0) {
         endGame();
     }
@@ -101,4 +100,3 @@ function endGame() {
     gameOverFlag = true;
     alert("Game Over! Score: " + score);
 }
-
