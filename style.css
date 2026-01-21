@@ -1,44 +1,231 @@
-body {
+/* Full Screen Styles - CSS file only changes */
+* {
     margin: 0;
-    background: #70c5ce;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1a2980, #26d0ce);
+    overflow: hidden;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    font-family: Arial, sans-serif;
 }
 
 #gameContainer {
     position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
+    max-height: 100%;
 }
 
+/* Canvas - Full Screen with aspect ratio */
 canvas {
     background: #70c5ce;
     display: block;
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
 }
 
+/* Game Over Screen */
 #gameOver {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.85);
     color: white;
     display: none;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    z-index: 100;
+    border-radius: 10px;
 }
 
+#gameOver h2 {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #ff6b6b;
+    text-shadow: 0 0 20px rgba(255, 107, 107, 0.7);
+}
+
+#gameOver p {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+}
+
+/* Score Display */
+#scoreDisplay {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: white;
+    font-size: 1.5rem;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 10px;
+    min-width: 200px;
+}
+
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.score-label {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+#currentScore, #highScore {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+}
+
+/* Start Screen */
+#startScreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 200;
+    border-radius: 10px;
+}
+
+#startScreen h1 {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    color: #4ecdc4;
+    text-shadow: 0 0 20px rgba(78, 205, 196, 0.7);
+}
+
+#startScreen p {
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+    color: #ffd700;
+}
+
+/* Buttons */
 button {
-    padding: 10px 20px;
-    font-size: 18px;
-    margin-top: 20px;
+    padding: 18px 40px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
     cursor: pointer;
+    background: linear-gradient(to right, #00b09b, #96c93d);
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    min-width: 200px;
 }
 
-#score, #highScore {
-    font-size: 20px;
-    margin: 10px;
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(to right, #00a08b, #88c22b);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+/* Instructions */
+.instructions {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 1.2rem;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #gameOver h2 {
+        font-size: 3rem;
+    }
+    
+    #gameOver p {
+        font-size: 2rem;
+    }
+    
+    #startScreen h1 {
+        font-size: 3.5rem;
+    }
+    
+    #startScreen p {
+        font-size: 1.5rem;
+    }
+    
+    button {
+        padding: 15px 30px;
+        font-size: 1.3rem;
+    }
+    
+    #scoreDisplay {
+        font-size: 1.2rem;
+        min-width: 180px;
+    }
+    
+    #currentScore, #highScore {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #gameOver h2 {
+        font-size: 2.5rem;
+    }
+    
+    #gameOver p {
+        font-size: 1.8rem;
+    }
+    
+    #startScreen h1 {
+        font-size: 3rem;
+    }
+    
+    #scoreDisplay {
+        top: 10px;
+        left: 10px;
+        padding: 10px;
+        min-width: 160px;
+        font-size: 1rem;
+    }
+    
+    #currentScore, #highScore {
+        font-size: 1.3rem;
+    }
+    
+    button {
+        padding: 12px 25px;
+        font-size: 1.2rem;
+        min-width: 180px;
+    }
 }
