@@ -1,27 +1,72 @@
 body {
     text-align: center;
-    font-family: sans-serif;
-    background: #70c5ce;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #87CEEB, #1E90FF);
     margin: 0;
-    padding: 0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-canvas {
+#gameCanvas {
     display: block;
     margin: 20px auto;
     background: #70c5ce;
-    border: 2px solid #000;
+    border: 4px solid #2E8B57;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 #score {
-    text-align: center;
-    font-size: 20px;
-    color: #fff;
+    font-size: 24px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 10px 0;
+    padding: 10px 20px;
+    background: rgba(46, 139, 87, 0.8);
+    border-radius: 20px;
 }
 
 button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
+    margin-top: 15px;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(to bottom, #FFD700, #FF8C00);
+    border: none;
+    border-radius: 25px;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
 }
 
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(to bottom, #FFE44D, #FFA500);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+.instructions {
+    margin-top: 20px;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 400px;
+}
+
+h1 {
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
+}
