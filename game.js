@@ -25,7 +25,7 @@ const PIPE_INTERVAL = 1500; // milliseconds
 
 // Initialize
 function init() {
-    highScoreElement.textContent = `High Score: ${highScore}`;
+    highScoreElement.textContent = High Score: ${highScore};
 
     startBtn.addEventListener('click', startGame);
     restartBtn.addEventListener('click', startGame);
@@ -51,7 +51,7 @@ function startGame() {
     lastTime = 0;
     lastPipeTime = 0;
 
-    scoreElement.textContent = `Score: ${score}`;
+    scoreElement.textContent = Score: ${score};
     gameOverScreen.style.display = 'none';
     startBtn.style.display = 'none';
 
@@ -104,7 +104,7 @@ function updatePipes(currentTime) {
         if (!pipe.passed && pipe.x + PIPE_WIDTH < bird.x) {
             pipe.passed = true;
             score++;
-            scoreElement.textContent = `Score: ${score}`;
+            scoreElement.textContent = Score: ${score};
         }
     }
 }
@@ -172,8 +172,8 @@ function gameOver() {
         highScore = score;
         localStorage.setItem('flappyHighScore', highScore);
     }
-    highScoreElement.textContent = `High Score: ${highScore}`;
-    finalScoreElement.textContent = `Score: ${score}`;
+    highScoreElement.textContent = High Score: ${highScore};
+    finalScoreElement.textContent = Score: ${score};
     gameOverScreen.style.display = 'flex';
     startBtn.style.display = 'block';
 }
