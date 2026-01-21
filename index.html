@@ -1,61 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Bird Game</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<title>Flappy Bird</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-dove"></i> Flappy Bird</h1>
-            <p class="subtitle">Fly through the pipes!</p>
-        </header>
 
-        <div class="game-area">
-            <div class="stats">
-                <div class="score-box">
-                    <h3><i class="fas fa-star"></i> Score</h3>
-                    <div class="score" id="score">0</div>
-                </div>
-                <div class="high-score-box">
-                    <h3><i class="fas fa-trophy"></i> Best</h3>
-                    <div class="score" id="highScore">0</div>
-                </div>
-            </div>
-
-            <div class="canvas-container">
-                <canvas id="gameCanvas" width="400" height="600"></canvas>
-                <div class="game-over" id="gameOver">
-                    <h2>Game Over!</h2>
-                    <p id="finalScore">Score: 0</p>
-                    <button id="restartBtn"><i class="fas fa-redo"></i> Play Again</button>
-                </div>
-            </div>
-
-            <div class="controls">
-                <button id="startBtn" class="btn start-btn">
-                    <i class="fas fa-play"></i> Start Game
-                </button>
-                <div class="instructions">
-                    <h3><i class="fas fa-info-circle"></i> How to Play</h3>
-                    <ul>
-                        <li><i class="fas fa-space-shuttle"></i> Press SPACE to flap</li>
-                        <li><i class="fas fa-mouse-pointer"></i> Or CLICK to flap</li>
-                        <li><i class="fas fa-ban"></i> Avoid the pipes</li>
-                        <li><i class="fas fa-bullseye"></i> Score points for each pipe</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            <p>Made with <i class="fas fa-heart"></i> | Flappy Bird Game</p>
-        </footer>
+<div id="gameContainer">
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    
+    <div id="gameOver">
+        <h1>Game Over</h1>
+        <p id="finalScore">Score: 0</p>
+        <button id="restartBtn">Restart</button>
     </div>
 
-    <script src="game.js"></script>
+    <div id="score">Score: 0</div>
+    <div id="highScore">High Score: 0</div>
+    <button id="startBtn">Start Game</button>
+</div>
+
+<script src="game.js"></script>
 </body>
 </html>
